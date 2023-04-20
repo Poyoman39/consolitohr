@@ -3,6 +3,7 @@ const LOG_LEVELS = require('../constants/LOG_LEVELS');
 function BasicReporter(options = {}) {
   // === Read options === //
   this.maxLevel = LOG_LEVELS[options.maxLevel || 'verbose'];
+  this.formatDate = options.formatDate || null;
 
   // === Body === //
 
@@ -15,10 +16,13 @@ function BasicReporter(options = {}) {
 
     const log = logger[level] || logger.log;
 
-    log(
+    log(...[
+      ...this.formatDate ? [
+        `[${this.formatDate(new Date())}]`,
+      ] : [],
       `[${level}]`,
       ...args,
-    );
+    ]);
   };
 }
 
