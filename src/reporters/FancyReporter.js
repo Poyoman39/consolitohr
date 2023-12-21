@@ -31,12 +31,15 @@ const LEVEL_IS_BADGE = {
   fatal: true,
   error: true,
   warn: true,
+  info: true,
 };
 
 const getBgColor = (color = 'white') => (
   colors[`bg${color[0].toUpperCase()}${color.slice(1)}`]
   || colors.bgWhite
 );
+
+const DEFAULT_FORMAT_DATE = (date) => `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
 function FancyReporter(options = {}) {
   // === Read options === //
@@ -45,6 +48,8 @@ function FancyReporter(options = {}) {
   // === Body === //
 
   const logger = console;
+
+  this.formatDate = options.formatDate || DEFAULT_FORMAT_DATE;
 
   this.log = (level, ...args) => {
     if (LOG_LEVELS[level] > this.maxLevel) {
@@ -63,7 +68,10 @@ function FancyReporter(options = {}) {
       )
       : colors[levelColor](levelIcon);
 
+    const dateStr = colors.gray(this.formatDate?.(new Date()));
+
     log(
+      ...dateStr ? [dateStr] : [],
       logHeader,
       ...args,
     );
